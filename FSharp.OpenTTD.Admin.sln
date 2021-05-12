@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharp.OpenTTD.Admin.Networking", "src\FSharp.OpenTTD.Admin.Networking\FSharp.OpenTTD.Admin.Networking.fsproj", "{8AD9344B-CBA0-4927-974E-DD893C722267}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharp.OpenTTD.Admin", "src\FSharp.OpenTTD.Admin\FSharp.OpenTTD.Admin.fsproj", "{8AD9344B-CBA0-4927-974E-DD893C722267}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

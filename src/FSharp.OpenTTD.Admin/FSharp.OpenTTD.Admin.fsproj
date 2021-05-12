@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Akka.FSharp" Version="1.4.19" />
+        <PackageReference Include="FSharpx.Collections" Version="2.1.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Include="Networking\Enums.fs" />
+      <Compile Include="Networking\Packet.fs" />
+      <Compile Include="Networking\PacketTransformer.fs" />
+      <Compile Include="Networking\MessageTransformer.fs" />
+      <Compile Include="Models\State.fs" />
+      <Compile Include="Actors\Messages.fs" />
+      <Compile Include="Actors\Sender.fs" />
+      <Compile Include="Actors\Receiver.fs" />
+      <Compile Include="Actors\Coordinator.fs" />
+    </ItemGroup>
+
+</Project>
