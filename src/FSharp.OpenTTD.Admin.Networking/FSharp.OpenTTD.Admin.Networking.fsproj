@@ -9,4 +9,11 @@
         <PackageReference Include="FSharpx.Collections" Version="2.1.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Include="Enums.fs" />
+      <Compile Include="Packet.fs" />
+      <Compile Include="PacketTransformer.fs" />
+      <Compile Include="MessageTransformer.fs" />
+    </ItemGroup>
+
 </Project>
