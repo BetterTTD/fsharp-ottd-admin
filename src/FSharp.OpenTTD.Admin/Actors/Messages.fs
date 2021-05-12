@@ -3,7 +3,12 @@
 module Messages =
 
     open FSharp.OpenTTD.Admin.Networking.PacketTransformer
+    open FSharp.OpenTTD.Admin.Models.State
 
+    type Dispatcher =
+        { PacketDispatcher : (PacketMessage -> unit) option
+          StateDispatcher  : (State         -> unit) option }
+    
     type Authorize =
         { Name    : string
           Pass    : string

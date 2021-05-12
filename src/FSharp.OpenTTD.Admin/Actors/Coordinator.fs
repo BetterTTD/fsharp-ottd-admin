@@ -3,6 +3,7 @@
 open System
 open System.Net
 open System.Net.Sockets
+open Microsoft.Extensions.Logging
 
 module Coordinator =
 
@@ -42,8 +43,16 @@ module Coordinator =
             Frequency  = AdminUpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC } ]
         |> List.map AdminUpdateFreqMsg
 
-    let init (host : IPAddress, port : int, tag : string) (mailbox : Actor<Message>) =
+    let private dispatchCore (dispatcher : Dispatcher option) (msg : PacketMessage, state : State.State) =
+        match dispatcher with
+        | Some dispatcher ->
+            dispatcher.PacketDispatcher |> Option.iter (fun dispatch -> dispatch msg)
+            dispatcher.StateDispatcher  |> Option.iter (fun dispatch -> dispatch state)
+        | None -> ()
+    
+    let init (logger : ILogger) (host : IPAddress, port : int, tag : string) (dispatcher : Dispatcher option) (mailbox : Actor<Message>) =
 
+        let dispatch    = dispatchCore dispatcher
         let cancelKey   = new Cancelable(mailbox.Context.System.Scheduler)
         let state       = State.init
         let stream      = connectToStream host port
@@ -65,6 +74,7 @@ module Coordinator =
                 match! mailbox.Receive () with
                 | PacketReceivedMsg msg ->
                     let state = State.dispatch state msg
+                    dispatch (msg, state)
                     match msg with
                     | ServerChatMsg _ ->
                         match state.ChatHistory |> List.tryLast with
@@ -80,6 +90,7 @@ module Coordinator =
                 match! mailbox.Receive () with
                 | PacketReceivedMsg msg ->
                     let state = State.dispatch state msg
+                    dispatch (msg, state)
                     match msg with
                     | ServerProtocolMsg _ ->
                         defaultPolls @ defaultUpdateFrequencies |> List.iter (fun msg -> sender <! msg)

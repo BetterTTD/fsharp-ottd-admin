@@ -8,6 +8,7 @@
     <ItemGroup>
         <PackageReference Include="Akka.FSharp" Version="1.4.19" />
         <PackageReference Include="FSharpx.Collections" Version="2.1.3" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -16,10 +17,12 @@
       <Compile Include="Networking\PacketTransformer.fs" />
       <Compile Include="Networking\MessageTransformer.fs" />
       <Compile Include="Models\State.fs" />
+      <Compile Include="Models\Configurations.fs" />
       <Compile Include="Actors\Messages.fs" />
       <Compile Include="Actors\Sender.fs" />
       <Compile Include="Actors\Receiver.fs" />
       <Compile Include="Actors\Coordinator.fs" />
+      <Compile Include="OpenTTD.fs" />
     </ItemGroup>
 
 </Project>
