@@ -42,7 +42,7 @@ module Coordinator =
             Frequency  = AdminUpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC } ]
         |> List.map AdminUpdateFreqMsg
 
-    let init (host : IPAddress, port : int, tag : string) (mailbox : Actor<Message>) =
+    let init (host : IPAddress, port : int, tag : string) (dispatch : (PacketMessage -> unit) option) (mailbox : Actor<Message>) =
 
         let cancelKey   = new Cancelable(mailbox.Context.System.Scheduler)
         let state       = State.init
@@ -64,6 +64,7 @@ module Coordinator =
             actor {
                 match! mailbox.Receive () with
                 | PacketReceivedMsg msg ->
+                    dispatch |> Option.iter (fun dispatch -> dispatch msg)
                     let state = State.dispatch state msg
                     match msg with
                     | ServerChatMsg _ ->
@@ -79,6 +80,7 @@ module Coordinator =
             actor {
                 match! mailbox.Receive () with
                 | PacketReceivedMsg msg ->
+                    dispatch |> Option.iter (fun dispatch -> dispatch msg)
                     let state = State.dispatch state msg
                     match msg with
                     | ServerProtocolMsg _ ->
