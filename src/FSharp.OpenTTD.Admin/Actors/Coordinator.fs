@@ -3,6 +3,7 @@
 open System
 open System.Net
 open System.Net.Sockets
+open Microsoft.Extensions.Logging
 
 module Coordinator =
 
@@ -49,7 +50,7 @@ module Coordinator =
             dispatcher.StateDispatcher  |> Option.iter (fun dispatch -> dispatch state)
         | None -> ()
     
-    let init (host : IPAddress, port : int, tag : string) (dispatcher : Dispatcher option) (mailbox : Actor<Message>) =
+    let init (logger : ILogger) (host : IPAddress, port : int, tag : string) (dispatcher : Dispatcher option) (mailbox : Actor<Message>) =
 
         let dispatch    = dispatchCore dispatcher
         let cancelKey   = new Cancelable(mailbox.Context.System.Scheduler)
