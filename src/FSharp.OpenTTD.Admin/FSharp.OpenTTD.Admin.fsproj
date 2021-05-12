@@ -10,10 +10,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Include="Enums.fs" />
-      <Compile Include="Packet.fs" />
-      <Compile Include="PacketTransformer.fs" />
-      <Compile Include="MessageTransformer.fs" />
+      <Compile Include="Networking\Enums.fs" />
+      <Compile Include="Networking\Packet.fs" />
+      <Compile Include="Networking\PacketTransformer.fs" />
+      <Compile Include="Networking\MessageTransformer.fs" />
     </ItemGroup>
 
 </Project>
