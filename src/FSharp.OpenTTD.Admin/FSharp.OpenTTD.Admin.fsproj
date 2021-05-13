@@ -15,7 +15,6 @@
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/TG-OpenTTD/fsharp-ottd-admin</RepositoryUrl>
         <PackageLicenseUrl>https://github.com/TG-OpenTTD/fsharp-ottd-admin/blob/main/LICENSE</PackageLicenseUrl>
-        <PackageIconUrl>https://github.com/TG-OpenTTD/fsharp-ottd-admin/blob/main/assets/icon-128x128.png?raw=true</PackageIconUrl>
         <Copyright>Copyright © 2021 Alex 'iTKerry' Katrynets</Copyright>
         <Company>TG OpenTTD</Company>
     </PropertyGroup>
