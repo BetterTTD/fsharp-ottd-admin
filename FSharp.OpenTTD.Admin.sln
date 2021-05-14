@@ -2,6 +2,12 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharp.OpenTTD.Admin", "src\FSharp.OpenTTD.Admin\FSharp.OpenTTD.Admin.fsproj", "{8AD9344B-CBA0-4927-974E-DD893C722267}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{BF60A976-7169-4103-8E86-B16FC12D0AC0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0F0164FB-157A-4A1D-9FA4-D498EC4C6095}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "DefaultSample", "examples\DefaultSample\DefaultSample.fsproj", "{CF5D200F-3313-459D-BF94-AFD56904CFB8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +18,13 @@ Global
 		{8AD9344B-CBA0-4927-974E-DD893C722267}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8AD9344B-CBA0-4927-974E-DD893C722267}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8AD9344B-CBA0-4927-974E-DD893C722267}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF5D200F-3313-459D-BF94-AFD56904CFB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF5D200F-3313-459D-BF94-AFD56904CFB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF5D200F-3313-459D-BF94-AFD56904CFB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF5D200F-3313-459D-BF94-AFD56904CFB8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8AD9344B-CBA0-4927-974E-DD893C722267} = {0F0164FB-157A-4A1D-9FA4-D498EC4C6095}
+		{CF5D200F-3313-459D-BF94-AFD56904CFB8} = {BF60A976-7169-4103-8E86-B16FC12D0AC0}
 	EndGlobalSection
 EndGlobal
