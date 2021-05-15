@@ -8,6 +8,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0F0164FB-157
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "DefaultSample", "examples\DefaultSample\DefaultSample.fsproj", "{CF5D200F-3313-459D-BF94-AFD56904CFB8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{05EA31CF-8854-44DC-9E6F-F611E6E0E1D4}"
+ProjectSection(SolutionItems) = preProject
+	NuGet.config = NuGet.config
+EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Repository Items", "Repository Items", "{FCC1A470-B237-4C17-9734-8FF0C87F2A81}"
+ProjectSection(SolutionItems) = preProject
+	.gitignore = .gitignore
+	LICENSE = LICENSE
+	README.md = README.md
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
