@@ -3,6 +3,7 @@
 open System
 open System.Net
 open System.Net.Sockets
+open Akka.Event
 open Microsoft.Extensions.Logging
 
 module Coordinator =
@@ -82,7 +83,7 @@ module Coordinator =
                         | None -> ()
                     | _ -> ()
                     return! connected sender receiver state
-                | _ -> failwith "INVALID CONNECTING STATE CAPTURED"
+                | _ -> return UnhandledMessage
             }
             
         and connecting sender receiver state =
@@ -97,8 +98,10 @@ module Coordinator =
                         return! connecting sender receiver state
                     | ServerWelcomeMsg _ ->
                         return! connected sender receiver state
-                    | _ -> failwithf $"INVALID CONNECTING STATE CAPTURED FOR PACKET: %A{msg}"
-                | _ -> failwith "INVALID CONNECTING STATE CAPTURED"
+                    | _ ->
+                        logger.LogError $"INVALID CONNECTING STATE CAPTURED FOR PACKET: %A{msg}"
+                        return UnhandledMessage
+                | _ -> return UnhandledMessage
             }
         
         and idle sender receiver state =
@@ -108,7 +111,7 @@ module Coordinator =
                     sender <! AdminJoinMsg { Password = pass; AdminName = name; AdminVersion = ver }
                     schedule mailbox receiver 1.0 "receive" cancelKey
                     return! connecting sender receiver state
-                | _ -> failwith "INVALID IDLE STATE CAPTURED"
+                | _ -> return UnhandledMessage
             }
             
         idle senderRef receiverRef state
