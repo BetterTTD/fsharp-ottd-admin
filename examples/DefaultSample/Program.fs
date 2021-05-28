@@ -1,13 +1,25 @@
-﻿// Learn more about F# at http://docs.microsoft.com/dotnet/fsharp
+﻿open FSharp.OpenTTD.Admin.OpenTTD
+open Microsoft.Extensions.DependencyInjection
+open Microsoft.Extensions.Hosting
+open Microsoft.Extensions.Logging
 
-open System
+type Worker(logger : ILogger, ottd : OpenTTD) =
+    interface IHostedService with
+        member this.StartAsync(cts) =
+            failwith "todo"
+        member this.StopAsync(cts) =
+            failwith "todo"
 
-// Define a function to construct a message to print
-let from whom =
-    sprintf "from %s" whom
+let builder argv =
+    Host.CreateDefaultBuilder(argv)
+        .ConfigureServices(fun services ->
+            services
+                .AddTransient<OpenTTD>()
+                .AddHostedService<Worker>()
+            |> ignore)
+        .Build()
 
 [<EntryPoint>]
 let main argv =
-    let message = from "F#" // Call the function
-    printfn "Hello world %s" message
-    0 // return an integer exit code
+    builder(argv).Run()
+    0
