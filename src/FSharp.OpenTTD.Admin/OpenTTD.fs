@@ -9,7 +9,7 @@ open Microsoft.Extensions.Logging
 
 module OpenTTD =
     
-    type OpenTTD(logger : ILogger) =
+    type OpenTTD(logger : ILogger<OpenTTD>) =
 
         let mutable actors = Map.empty
 
