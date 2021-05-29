@@ -34,7 +34,7 @@ type Worker(logger : ILogger<OpenTTD>, ottd : OpenTTD) =
             logger.LogInformation "Stopping ..."
             Task.CompletedTask
 
-let builder argv =
+let host argv =
     Host.CreateDefaultBuilder(argv)
         .ConfigureServices(fun services ->
             services
@@ -51,5 +51,5 @@ let builder argv =
 
 [<EntryPoint>]
 let main argv =
-    builder(argv).Run()
+    host(argv).Run()
     0
