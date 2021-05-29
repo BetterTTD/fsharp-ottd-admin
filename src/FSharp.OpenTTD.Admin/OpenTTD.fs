@@ -9,7 +9,7 @@ open Microsoft.Extensions.Logging
 
 module OpenTTD =
     
-    type OpenTTD(logger : ILogger) =
+    type OpenTTD(logger : ILogger<OpenTTD>) =
 
         let mutable actors = Map.empty
 
@@ -17,7 +17,7 @@ module OpenTTD =
         
         let coordinatorBuilder (cfg, dispatcher) =
             let coordinatorCfg = (cfg.Host, cfg.Port, cfg.Tag)
-            Coordinator.init logger coordinatorCfg dispatcher
+            Coordinator.init coordinatorCfg dispatcher
         
         member this.AttachConnection (cfg : ServerConfiguration) (dispatcher : Dispatcher option)  =
             if actors.ContainsKey(cfg.Tag) then
