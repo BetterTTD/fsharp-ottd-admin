@@ -5,6 +5,8 @@ open System.Net
 open System.Net.Sockets
 open Akka.Event
 
+open Akka.Persistence.Reminders
+
 module Coordinator =
 
     open FSharp.OpenTTD.Admin.Models
@@ -16,12 +18,6 @@ module Coordinator =
     open Akka.Actor
     open Akka.FSharp
 
-    let private schedule (mailbox : Actor<_>) ref interval msg cancelKey =
-        mailbox.Context.System.Scheduler.ScheduleTellRepeatedly(
-            TimeSpan.FromMilliseconds 0.,
-            TimeSpan.FromMilliseconds interval,
-            ref, msg, mailbox.Self, cancelKey)
-        
     let private connectToStream (ipAddress : IPAddress) (port : int) =
         let tcpClient = new TcpClient ()
         tcpClient.Connect (ipAddress, port)
@@ -53,23 +49,24 @@ module Coordinator =
     let init (host : IPAddress, port : int, tag : string) (dispatcher : Dispatcher option) (mailbox : Actor<Message>) =
 
         let dispatch    = dispatchCore dispatcher
-        let cancelKey   = new Cancelable(mailbox.Context.System.Scheduler)
         let state       = State.init
         let stream      = connectToStream host port
-        let senderRef   = Sender.init   stream |> spawn mailbox "sender"
-        let receiverRef = Receiver.init stream |> spawn mailbox "receiver"
+        
+        let senderRef    = Sender.init   stream |> spawn mailbox "sender"
+        let receiverRef  = Receiver.init stream |> spawn mailbox "receiver"
+        let reminderRef  = mailbox.Context.ActorOf(Reminder.Props(), "reminder")
         
         mailbox.Defer (fun () ->
-            cancelKey.Cancel()
-            senderRef   <! PoisonPill.Instance
-            receiverRef <! PoisonPill.Instance)
+            reminderRef  <! PoisonPill.Instance
+            senderRef    <! PoisonPill.Instance
+            receiverRef  <! PoisonPill.Instance)
         
-        let rec errored sender receiver state =
+        let rec errored sender receiver reminder state =
             actor {
-                return! errored sender receiver state
+                return! errored sender receiver reminder state
             }
             
-        and connected sender receiver state =
+        and connected sender receiver reminder state =
             actor {
                 match! mailbox.Receive () with
                 | PacketReceivedMsg msg ->
@@ -81,11 +78,11 @@ module Coordinator =
                         | Some chatAction -> printfn $"%A{chatAction}"
                         | None -> ()
                     | _ -> ()
-                    return! connected sender receiver state
+                    return! connected sender receiver reminder state
                 | _ -> return UnhandledMessage
             }
             
-        and connecting sender receiver state =
+        and connecting sender receiver reminder state =
             actor {
                 match! mailbox.Receive () with
                 | PacketReceivedMsg msg ->
@@ -94,22 +91,26 @@ module Coordinator =
                     match msg with
                     | ServerProtocolMsg _ ->
                         defaultPolls @ defaultUpdateFrequencies |> List.iter (fun msg -> sender <! msg)
-                        return! connecting sender receiver state
+                        return! connecting sender receiver reminder state
                     | ServerWelcomeMsg _ ->
-                        return! connected sender receiver state
+                        return! connected sender receiver reminder state
                     | _ ->
                         return UnhandledMessage
                 | _ -> return UnhandledMessage
             }
         
-        and idle sender receiver state =
+        and idle sender (receiver : IActorRef) reminder state =
             actor {
                 match! mailbox.Receive () with
                 | AuthorizeMsg { Pass = pass; Name = name; Version = ver } ->
-                    sender <! AdminJoinMsg { Password = pass; AdminName = name; AdminVersion = ver }
-                    schedule mailbox receiver 1.0 "receive" cancelKey
-                    return! connecting sender receiver state
+                    sender   <! AdminJoinMsg { Password = pass; AdminName = name; AdminVersion = ver }
+                    reminder <! Reminder.ScheduleRepeatedly(
+                                    Guid.NewGuid().ToString(),
+                                    receiver.Path,
+                                    "receive",
+                                    DateTime.Now.AddSeconds(1.0), TimeSpan.FromSeconds(1.0))
+                    return! connecting sender receiver reminder state
                 | _ -> return UnhandledMessage
             }
             
-        idle senderRef receiverRef state
+        idle senderRef receiverRef reminderRef state

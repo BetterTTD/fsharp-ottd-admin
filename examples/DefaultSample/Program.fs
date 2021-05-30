@@ -41,8 +41,8 @@ type Worker(logger : ILogger<OpenTTD>, ottd : OpenTTD) =
                 |> Result.map (fun _ -> Thread.Sleep(2000))
                 |> Result.bind (fun _ -> attachConnection cfg dispatcher)
                 |> Result.map (fun _ -> logger.LogInformation $"Connection attached: %A{cfg}")
-                //|> Result.bind (fun _ -> removeConnection cfg.Tag)
-                //|> Result.map (fun _ -> logger.LogInformation $"Connection removed: %A{cfg.Tag}")
+                |> Result.bind (fun _ -> removeConnection cfg.Tag)
+                |> Result.map (fun _ -> logger.LogInformation $"Connection removed: %A{cfg.Tag}")
             
             match result with
             | Ok _      -> logger.LogInformation "Work done successfully"
