@@ -26,7 +26,7 @@ module Scheduler =
             actor {
                 match! mailbox.Receive () with
                 | AddJob (actor, msg, time) ->
-                    // if job already exists, then skip somehow
+                    // TODO: if job already exists, then skip somehow
                     timer.Interval <- time.TotalMilliseconds
                     timer.Elapsed.Add (fun _ -> actor <! msg) 
                     return! loop ()
