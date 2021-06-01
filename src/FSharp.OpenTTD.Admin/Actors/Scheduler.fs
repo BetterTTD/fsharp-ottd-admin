@@ -3,6 +3,7 @@
 open System
 open System.Timers
 open Akka.Actor
+open Akka.Event
 
 module Scheduler =
         
@@ -21,21 +22,32 @@ module Scheduler =
         timer.Start()
         mailbox.Defer (fun _ -> timer.Dispose())
         
-        let rec loop () =
-            
+        let rec running () =
+            actor {
+                match! mailbox.Receive () with
+                | PauseJob ->
+                    timer.Stop ()
+                    return! paused ()
+                | _ -> return UnhandledMessage 
+            }
+        
+        and paused () =
+            actor {
+                match! mailbox.Receive () with
+                | ResumeJob ->
+                    timer.Start ()
+                    return! running ()
+                | _ -> return UnhandledMessage 
+            }
+        
+        and idle () =
             actor {
                 match! mailbox.Receive () with
                 | AddJob (actor, msg, time) ->
-                    // if job already exists, then skip somehow
                     timer.Interval <- time.TotalMilliseconds
                     timer.Elapsed.Add (fun _ -> actor <! msg) 
-                    return! loop ()
-                | PauseJob ->
-                    timer.Stop ()
-                    return! loop ()
-                | ResumeJob ->
-                    timer.Start ()
-                    return! loop ()
+                    return! idle ()
+                | _ -> return UnhandledMessage 
             }
             
-        loop ()
+        idle ()
