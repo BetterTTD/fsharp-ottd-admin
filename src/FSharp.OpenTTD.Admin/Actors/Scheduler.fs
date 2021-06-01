@@ -1,23 +1,20 @@
 ﻿namespace FSharp.OpenTTD.Admin.Actors
 
-open System
-open System.Timers
-open Akka.Actor
-open Akka.Event
-
 module Scheduler =
-        
+    
+    open System
+    open System.Timers
+    open Akka.Actor
+    open Akka.Event
     open Akka.FSharp
 
     type JobMessage = obj
-
     type Message =
         | AddJob of IActorRef * JobMessage * TimeSpan
         | PauseJob
         | ResumeJob
         
     let init (mailbox : Actor<Message>) =
-        
         let timer = new Timer()
         timer.Start()
         mailbox.Defer (fun _ -> timer.Dispose())
@@ -30,7 +27,7 @@ module Scheduler =
                     return! paused ()
                 | _ -> return UnhandledMessage 
             }
-        
+            
         and paused () =
             actor {
                 match! mailbox.Receive () with
@@ -39,7 +36,7 @@ module Scheduler =
                     return! running ()
                 | _ -> return UnhandledMessage 
             }
-        
+            
         and idle () =
             actor {
                 match! mailbox.Receive () with

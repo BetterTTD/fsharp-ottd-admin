@@ -58,7 +58,8 @@ module Coordinator =
         mailbox.Defer (fun () ->
             schedulerRef <! PoisonPill.Instance
             senderRef    <! PoisonPill.Instance
-            receiverRef  <! PoisonPill.Instance)
+            receiverRef  <! PoisonPill.Instance
+            stream.Dispose ())
         
         let rec errored sender receiver scheduler state =
             actor {
@@ -99,7 +100,7 @@ module Coordinator =
                 | _ -> return UnhandledMessage
             }
         
-        and idle sender (receiver : IActorRef) scheduler state =
+        and idle sender receiver scheduler state =
             actor {
                 match! mailbox.Receive () with
                 | AuthorizeMsg { Pass = pass; Name = name; Version = ver } ->
