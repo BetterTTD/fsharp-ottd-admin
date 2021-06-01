@@ -1,27 +1,22 @@
 ﻿namespace FSharp.OpenTTD.Admin.Actors
 
-open System
-open System.Net
-open System.Net.Sockets
-open Akka.Event
-
 module Coordinator =
 
-    open FSharp.OpenTTD.Admin.Models
+    open System
+    open System.Net
+    open System.Net.Sockets
+
+    open FSharp.OpenTTD.Admin.Actors
     open FSharp.OpenTTD.Admin.Actors.Messages
+    open FSharp.OpenTTD.Admin.Models
+    open FSharp.OpenTTD.Admin.Networking.PacketTransformer
     open FSharp.OpenTTD.Admin.Networking.MessageTransformer
     open FSharp.OpenTTD.Admin.Networking.Enums
-    open FSharp.OpenTTD.Admin.Networking.PacketTransformer
 
+    open Akka.Event
     open Akka.Actor
     open Akka.FSharp
 
-    let private schedule (mailbox : Actor<_>) ref interval msg cancelKey =
-        mailbox.Context.System.Scheduler.ScheduleTellRepeatedly(
-            TimeSpan.FromMilliseconds 0.,
-            TimeSpan.FromMilliseconds interval,
-            ref, msg, mailbox.Self, cancelKey)
-        
     let private connectToStream (ipAddress : IPAddress) (port : int) =
         let tcpClient = new TcpClient ()
         tcpClient.Connect (ipAddress, port)
@@ -52,24 +47,26 @@ module Coordinator =
     
     let init (host : IPAddress, port : int, tag : string) (dispatcher : Dispatcher option) (mailbox : Actor<Message>) =
 
-        let dispatch    = dispatchCore dispatcher
-        let cancelKey   = new Cancelable(mailbox.Context.System.Scheduler)
-        let state       = State.init
-        let stream      = connectToStream host port
-        let senderRef   = Sender.init   stream |> spawn mailbox "sender"
-        let receiverRef = Receiver.init stream |> spawn mailbox "receiver"
+        let dispatch  = dispatchCore dispatcher
+        let state     = State.init
+        let stream    = connectToStream host port
+        
+        let senderRef     = Sender.init   stream |> spawn mailbox "sender"
+        let receiverRef   = Receiver.init stream |> spawn mailbox "receiver"
+        let schedulerRef  = Scheduler.init       |> spawn mailbox "scheduler"
         
         mailbox.Defer (fun () ->
-            cancelKey.Cancel()
-            senderRef   <! PoisonPill.Instance
-            receiverRef <! PoisonPill.Instance)
+            schedulerRef <! PoisonPill.Instance
+            senderRef    <! PoisonPill.Instance
+            receiverRef  <! PoisonPill.Instance)
         
-        let rec errored sender receiver state =
+        let rec errored sender receiver scheduler state =
             actor {
-                return! errored sender receiver state
+                scheduler <! Scheduler.PauseJob
+                return! errored sender receiver scheduler state
             }
             
-        and connected sender receiver state =
+        and connected sender receiver scheduler state =
             actor {
                 match! mailbox.Receive () with
                 | PacketReceivedMsg msg ->
@@ -81,11 +78,11 @@ module Coordinator =
                         | Some chatAction -> printfn $"%A{chatAction}"
                         | None -> ()
                     | _ -> ()
-                    return! connected sender receiver state
+                    return! connected sender receiver scheduler state
                 | _ -> return UnhandledMessage
             }
             
-        and connecting sender receiver state =
+        and connecting sender receiver scheduler state =
             actor {
                 match! mailbox.Receive () with
                 | PacketReceivedMsg msg ->
@@ -94,22 +91,22 @@ module Coordinator =
                     match msg with
                     | ServerProtocolMsg _ ->
                         defaultPolls @ defaultUpdateFrequencies |> List.iter (fun msg -> sender <! msg)
-                        return! connecting sender receiver state
+                        return! connecting sender receiver scheduler state
                     | ServerWelcomeMsg _ ->
-                        return! connected sender receiver state
+                        return! connected sender receiver scheduler state
                     | _ ->
                         return UnhandledMessage
                 | _ -> return UnhandledMessage
             }
         
-        and idle sender receiver state =
+        and idle sender (receiver : IActorRef) scheduler state =
             actor {
                 match! mailbox.Receive () with
                 | AuthorizeMsg { Pass = pass; Name = name; Version = ver } ->
-                    sender <! AdminJoinMsg { Password = pass; AdminName = name; AdminVersion = ver }
-                    schedule mailbox receiver 1.0 "receive" cancelKey
-                    return! connecting sender receiver state
+                    sender    <! AdminJoinMsg { Password = pass; AdminName = name; AdminVersion = ver }
+                    scheduler <! Scheduler.AddJob (receiver, "receive", TimeSpan.FromSeconds(1.0))
+                    return! connecting sender receiver scheduler state
                 | _ -> return UnhandledMessage
             }
             
-        idle senderRef receiverRef state
+        idle senderRef receiverRef schedulerRef state

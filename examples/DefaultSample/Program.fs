@@ -1,4 +1,5 @@
 ﻿open System.Net
+open System.Threading
 open System.Threading.Tasks
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
@@ -13,7 +14,7 @@ let cfg =
       Port = 3977
       Pass = "12345"
       Name = "Local Serv"
-      Tag  = "local"
+      Tag  = "local-serv"
       Ver  = "1.0.0" }
     
 let defaultDispatcher (logger : ILogger) =
@@ -21,16 +22,35 @@ let defaultDispatcher (logger : ILogger) =
       StateDispatcher  = Some (fun state  -> logger.LogDebug $"Dispatch: %A{state}" ) }
     
 type Worker(logger : ILogger<OpenTTD>, ottd : OpenTTD) =
+    let attachConnection cfg dispatcher =
+        ottd.AttachConnection cfg dispatcher
+        
+    let removeConnection tag =
+        ottd.RemoveConnection tag
+    
     interface IHostedService with
-        member this.StartAsync(cts) =
+        member this.StartAsync _ =
             logger.LogInformation "Starting ..."
-            let dispatcher = defaultDispatcher logger |> Some
-            match ottd.AttachConnection cfg dispatcher with
-            | Ok _      -> logger.LogInformation $"Connection attached: %A{cfg}"
+            
+            let result = 
+                let dispatcher = defaultDispatcher logger |> Some
+                attachConnection cfg dispatcher
+                |> Result.map (fun _ -> logger.LogInformation $"Connection attached: %A{cfg}")
+                |> Result.bind (fun _ -> removeConnection cfg.Tag)
+                |> Result.map (fun _ -> logger.LogInformation $"Connection removed: %A{cfg.Tag}")
+                |> Result.map (fun _ -> Thread.Sleep(2000))
+                |> Result.bind (fun _ -> attachConnection cfg dispatcher)
+                |> Result.map (fun _ -> logger.LogInformation $"Connection attached: %A{cfg}")
+                |> Result.bind (fun _ -> removeConnection cfg.Tag)
+                |> Result.map (fun _ -> logger.LogInformation $"Connection removed: %A{cfg.Tag}")
+            
+            match result with
+            | Ok _      -> logger.LogInformation "Work done successfully"
             | Error err -> logger.LogError err
             
             Task.CompletedTask
-        member this.StopAsync(cts) =
+            
+        member this.StopAsync _ =
             logger.LogInformation "Stopping ..."
             Task.CompletedTask
 

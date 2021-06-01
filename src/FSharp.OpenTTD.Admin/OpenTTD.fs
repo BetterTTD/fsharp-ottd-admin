@@ -2,10 +2,11 @@
 
 open Akka.Actor
 open Akka.FSharp
-open FSharp.OpenTTD.Admin.Actors
 open FSharp.OpenTTD.Admin.Actors.Messages
-open FSharp.OpenTTD.Admin.Models.Configurations
 open Microsoft.Extensions.Logging
+
+open FSharp.OpenTTD.Admin.Actors
+open FSharp.OpenTTD.Admin.Models.Configurations
 
 module OpenTTD =
     

@@ -34,6 +34,7 @@
         <Compile Include="Models\State.fs" />
         <Compile Include="Models\Configurations.fs" />
         <Compile Include="Actors\Messages.fs" />
+        <Compile Include="Actors\Scheduler.fs" />
         <Compile Include="Actors\Sender.fs" />
         <Compile Include="Actors\Receiver.fs" />
         <Compile Include="Actors\Coordinator.fs" />
