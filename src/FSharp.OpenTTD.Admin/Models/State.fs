@@ -35,7 +35,7 @@ module State =
           Message         : string
           CompiledMessage : string }
 
-    type State =
+    type GameState =
         { GameInfo    : GameInfo   option
           Clients     : Client     list
           Companies   : Company    list
@@ -50,7 +50,7 @@ module State =
               HasPassword = false }
         { GameInfo = None; Clients = []; Companies = [ spectator ]; ChatHistory = [] }
         
-    let dispatch (state : State) (msg : PacketMessage) =
+    let dispatch (state : GameState) (msg : PacketMessage) =
         match msg with
         | ServerProtocolMsg _ -> state
 

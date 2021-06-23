@@ -38,7 +38,7 @@ module Coordinator =
             Frequency  = AdminUpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC } ]
         |> List.map AdminUpdateFreqMsg
 
-    let private dispatchCore (dispatcher : Dispatcher option) (msg : PacketMessage, state : State.State) =
+    let private dispatchCore (dispatcher : Dispatcher option) (msg : PacketMessage, state : State.GameState) =
         match dispatcher with
         | Some dispatcher ->
             dispatcher.PacketDispatcher |> Option.iter (fun dispatch -> dispatch msg)
