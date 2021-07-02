@@ -1,0 +1,5 @@
+source https://api.nuget.org/v3/index.json
+
+nuget Akka.FSharp
+nuget FSharpx.Collections
+nuget Microsoft.Extensions.Logging.Abstractions 
