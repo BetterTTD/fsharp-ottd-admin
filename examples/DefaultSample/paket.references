@@ -1,0 +1,5 @@
+nuget Microsoft.Extensions.Logging.Abstractions
+nuget Microsoft.Extensions.DependencyInjection 
+nuget Microsoft.Extensions.Hosting
+
+nuget FSharp.OpenTTD.Admin
