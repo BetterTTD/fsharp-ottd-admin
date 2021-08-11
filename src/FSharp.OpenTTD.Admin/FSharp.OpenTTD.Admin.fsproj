@@ -1,37 +1,37 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <Title>FSharp OpenTTD Admin</Title>
-    <PackageId>FSharp.OpenTTD.Admin</PackageId>
-    <AssemblyTitle>FSharp OpenTTD Admin</AssemblyTitle>
-    <Description>NuGet package of OpenTTD admin implementation via FSharp.</Description>
-    <PackageTags>fsharp;akka-net;openttd-admin;</PackageTags>
-    <Authors>iTKerry</Authors>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/TG-OpenTTD/fsharp-ottd-admin</RepositoryUrl>
-    <PackageLicenseUrl>https://github.com/TG-OpenTTD/fsharp-ottd-admin/blob/main/LICENSE</PackageLicenseUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/TG-OpenTTD/fsharp-ottd-admin/main/media/icon_128x128.png</PackageIconUrl>
-    <Copyright>Copyright © 2021 Alex 'iTKerry' Katrynets</Copyright>
-    <Company>TG OpenTTD</Company>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="Networking\Enums.fs" />
-    <Compile Include="Networking\Packet.fs" />
-    <Compile Include="Networking\PacketTransformer.fs" />
-    <Compile Include="Networking\MessageTransformer.fs" />
-    <Compile Include="Models\State.fs" />
-    <Compile Include="Models\Configurations.fs" />
-    <Compile Include="Actors\Messages.fs" />
-    <Compile Include="Actors\Scheduler.fs" />
-    <Compile Include="Actors\Sender.fs" />
-    <Compile Include="Actors\Receiver.fs" />
-    <Compile Include="Actors\Coordinator.fs" />
-    <Compile Include="OpenTTD.fs" />
-    <Content Include="paket.references" />
-  </ItemGroup>
-  <Import Project="..\..\.paket\Paket.Restore.targets" />
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <Title>FSharp OpenTTD Admin</Title>
+        <PackageId>FSharp.OpenTTD.Admin</PackageId>
+        <AssemblyTitle>FSharp OpenTTD Admin</AssemblyTitle>
+        <Description>NuGet package of OpenTTD admin implementation via FSharp.</Description>
+        <PackageTags>fsharp;akka-net;openttd-admin;</PackageTags>
+        <Authors>iTKerry</Authors>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/TG-OpenTTD/fsharp-ottd-admin</RepositoryUrl>
+        <PackageLicenseUrl>https://github.com/TG-OpenTTD/fsharp-ottd-admin/blob/main/LICENSE</PackageLicenseUrl>
+        <PackageIconUrl>https://raw.githubusercontent.com/TG-OpenTTD/fsharp-ottd-admin/main/media/icon_128x128.png</PackageIconUrl>
+        <Copyright>Copyright © 2021 Alex 'iTKerry' Katrynets</Copyright>
+        <Company>TG OpenTTD</Company>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <Compile Include="Networking\Enums.fs" />
+        <Compile Include="Networking\Packet.fs" />
+        <Compile Include="Networking\PacketTransformer.fs" />
+        <Compile Include="Networking\MessageTransformer.fs" />
+        <Compile Include="Models\State.fs" />
+        <Compile Include="Models\Configurations.fs" />
+        <Compile Include="Actors\Messages.fs" />
+        <Compile Include="Actors\Scheduler.fs" />
+        <Compile Include="Actors\Sender.fs" />
+        <Compile Include="Actors\Receiver.fs" />
+        <Compile Include="Actors\Coordinator.fs" />
+        <Compile Include="OpenTTD.fs" />
+    </ItemGroup>
 </Project>
