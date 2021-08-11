@@ -7,7 +7,7 @@ module Messages =
 
     type Dispatcher =
         { PacketDispatcher : (PacketMessage -> unit) option
-          StateDispatcher  : (State         -> unit) option }
+          StateDispatcher  : (GameState         -> unit) option }
     
     type Authorize =
         { Name    : string
