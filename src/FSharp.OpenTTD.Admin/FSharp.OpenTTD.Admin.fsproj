@@ -34,4 +34,10 @@
         <Compile Include="Actors\Coordinator.fs" />
         <Compile Include="OpenTTD.fs" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <PackageReference Update="FSharp.Core" Version="5.0.2" />
+      <PackageReference Include="Akka.FSharp" Version="1.4.23" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
+    </ItemGroup>
 </Project>
