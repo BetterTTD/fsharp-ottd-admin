@@ -43,7 +43,7 @@ module Scheduler =
                 | AddJob (actor, msg, time) ->
                     timer.Interval <- time.TotalMilliseconds
                     timer.Elapsed.Add (fun _ -> actor <! msg) 
-                    return! idle ()
+                    return! running ()
                 | _ -> return UnhandledMessage 
             }
             

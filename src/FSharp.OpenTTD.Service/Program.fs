@@ -1,5 +1,5 @@
-
 open Bus
+open Worker
 open FSharp.OpenTTD.Admin.OpenTTD
 
 open Giraffe
@@ -11,7 +11,7 @@ open Microsoft.Extensions.Hosting
 
 let webApp =
     choose [
-        route    "/ping"  >=> text "pong"
+        route "/ping" >=> text "pong"
         RequestErrors.NOT_FOUND "Not Found"
     ]
 
@@ -21,7 +21,7 @@ let configureApp (app : IApplicationBuilder) =
 let configureServices (services : IServiceCollection) =
     services.AddGiraffe() |> ignore
     services.AddLogging() |> ignore
-    services.AddSingleton<IBus, RedditBus>(fun sp -> createSimpleBus "localhost") |> ignore
+    services.AddSingleton<IBus, RedditBus>(fun sp -> createSimpleBus "mq") |> ignore
     services.AddTransient<OpenTTD>() |> ignore
     services.AddHostedService<Worker>() |> ignore
 

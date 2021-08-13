@@ -48,7 +48,10 @@ module State =
               ManagerName = ""
               Color       = Color.END
               HasPassword = false }
-        { GameInfo = None; Clients = []; Companies = [ spectator ]; ChatHistory = [] }
+        { GameInfo    = None
+          Clients     = []
+          Companies   = [ spectator ]
+          ChatHistory = [] }
         
     let dispatch (state : GameState) (msg : PacketMessage) =
         match msg with
