@@ -10,7 +10,11 @@ services:
       - "443"
     volumes:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
   mq:
+    environment:
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASSWORD=guest
     ports:
       - 5672:5672
       - 15672:15672

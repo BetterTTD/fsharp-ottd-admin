@@ -16,7 +16,7 @@ type IBus =
 
 type RedditBus(channel : IModel) =
     interface IBus with
-        member this.Receive queue handler =
+        member __.Receive queue handler =
             channel.QueueDeclare(
                 queue      = queue,
                 durable    = true,
@@ -38,7 +38,7 @@ type RedditBus(channel : IModel) =
             
             channel.BasicConsume(queue, true, consumer) |> ignore
             
-        member this.Send queue msg =
+        member __.Send queue msg =
            channel.QueueDeclare(
                queue      = queue,
                durable    = true,
