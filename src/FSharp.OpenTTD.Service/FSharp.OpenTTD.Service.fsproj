@@ -4,6 +4,9 @@
         <OutputType>Exe</OutputType>
         <TargetFramework>net5.0</TargetFramework>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
+        <UserSecretsId>7c87527d-2ab9-42b7-80af-11c4e2b56133</UserSecretsId>
+        <DockerfileContext>..\..</DockerfileContext>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,8 +16,13 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Include="Dockerfile" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Giraffe" Version="5.0.0" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="RabbitMQ.Client" Version="6.2.2" />
         <PackageReference Update="FSharp.Core" Version="5.0.2" />
@@ -22,11 +30,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\FSharp.OpenTTD.Admin\FSharp.OpenTTD.Admin.fsproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Include=".dockerignore" />
-      <Content Include="Dockerfile" />
     </ItemGroup>
 
 </Project>

@@ -353,3 +353,4 @@ MigrationBackup/
 #Paket dependency manager
 .paket/
 paket-files/
+.docker/

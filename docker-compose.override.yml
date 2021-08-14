@@ -1,12 +1,19 @@
 version: '3.7'
 
 services:
-    api:
-        environment:
-            - ASPNETCORE_ENVIRONMENT=Production
-        ports:
-            - 8888:80
-    mq:
-        ports:
-            - 5672:5672
-            - 15672:15672
+  api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+    ports:
+      - "80"
+      - "443"
+    volumes:
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+  mq:
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq

@@ -1,31 +1,27 @@
 version: '3.7'
 
 services:
-    api:
-        image: service.api
-        container_name: service.api
-        networks:
-            - openttd
-        depends_on:
-            mq:
-                condition: service_healthy
-        build:
-            context: .
-            dockerfile: src/FSharp.OpenTTD.Service/Dockerfile
-    mq:
-        image: rabbitmq:3-management-alpine
-        container_name: rabbitmq
-        networks:
-            - openttd
-        volumes:
-            - ./.docker/rabbitmq/etc/:/etc/rabbitmq/
-            - ./.docker/rabbitmq/data/:/var/lib/rabbitmq/
-            - ./.docker/rabbitmq/logs/:/var/log/rabbitmq/
-        healthcheck:
-            test: [ "CMD", "nc", "-z", "localhost", "5672" ]
-            interval: 5s
-            timeout: 10s
-            retries: 5
+  api:
+    image: service.api
+    container_name: service.api
+    depends_on:
+      - mq
+    build:
+      context: .
+      dockerfile: src/FSharp.OpenTTD.Service/Dockerfile
+    networks:
+      - openttd
+  
+  mq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    networks:
+      - openttd
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 networks:
-    openttd:
-        name: openttd.network
+  openttd:
+    name: openttd.network

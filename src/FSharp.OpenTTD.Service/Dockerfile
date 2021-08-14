@@ -1,4 +1,4 @@
-﻿ARG DotnetVersion=5.0
+ARG DotnetVersion=5.0
 FROM mcr.microsoft.com/dotnet/sdk:$DotnetVersion-focal AS build
 WORKDIR /app
 
@@ -23,6 +23,7 @@ COPY --from=build /app/out .
 
 HEALTHCHECK --interval=30s --timeout=30s --retries=3 \
    CMD curl --silent --fail http://localhost:80/_health || exit 1
-
-EXPOSE 80/tcp
+   
+EXPOSE 80
+EXPOSE 443
 ENTRYPOINT ["dotnet", "FSharp.OpenTTD.Service.dll"]
