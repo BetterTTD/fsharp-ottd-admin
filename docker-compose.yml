@@ -1,11 +1,13 @@
-version: '3.7'
+version: '2.1'
 
 services:
   api:
     image: service.api
     container_name: service.api
+    restart: always
     depends_on:
-      - mq
+      mq:
+        condition: service_healthy
     build:
       context: .
       dockerfile: src/FSharp.OpenTTD.Service/Dockerfile
@@ -18,9 +20,9 @@ services:
     networks:
       - openttd
     healthcheck:
-      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
-      interval: 10s
-      timeout: 10s
+      test: [ "CMD", "rabbitmqctl", "status" ]
+      interval: 5s
+      timeout: 20s
       retries: 5
 networks:
   openttd:

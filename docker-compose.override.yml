@@ -1,10 +1,10 @@
-version: '3.7'
+version: '2.1'
 
 services:
   api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_URLS=http://+:80
     ports:
       - "80"
       - "443"
@@ -16,8 +16,9 @@ services:
       - RABBITMQ_USER=guest
       - RABBITMQ_PASSWORD=guest
     ports:
-      - 5672:5672
-      - 15672:15672
+      - "5672:5672"    #amqp
+      - "15672:15672"  #http
+      - "15692:15692"  #prometheus
     volumes:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
