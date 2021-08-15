@@ -19,8 +19,9 @@ let configureApp (app : IApplicationBuilder) =
     app.UseGiraffe webApp
 
 let configureServices (services : IServiceCollection) =
-    services.AddGiraffe() |> ignore
-    services.AddLogging() |> ignore
+    services.AddHealthChecks() |> ignore 
+    services.AddGiraffe()      |> ignore
+    services.AddLogging()      |> ignore
     services.AddSingleton<IBus, RedditBus>(fun _ -> createSimpleBus "mq") |> ignore
     services.AddTransient<OpenTTD>() |> ignore
     services.AddHostedService<Worker>() |> ignore
